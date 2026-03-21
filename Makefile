@@ -7,7 +7,7 @@ up:
 
 # Derrubar os containers
 down:
-	$(COMPOSE) down
+	$(COMPOSE) down 
 
 # Buildar as imagens
 build:

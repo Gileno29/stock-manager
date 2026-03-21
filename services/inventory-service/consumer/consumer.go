@@ -58,7 +58,6 @@ func (c *consumer) Read() error {
 			if err != nil {
 				fmt.Println("erro ao conectar no banco de dados", err)
 			}
-			db.Populate()
 			repo := repository.NewRepo(db)
 
 			_, err = repo.InsertStock(context.Background(), order.ProductID, order.Quantity)
