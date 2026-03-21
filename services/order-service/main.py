@@ -16,6 +16,8 @@ async def index():
 @app.post("/checkout")
 async def checkout(order:order.Order):
     connection=broker.conection()
+    print(order)
+    
     try:
         order.send_to_queue(order.dict(), connection)
         return {"status": "success", "message": "Pedido enviado para processamento"}
