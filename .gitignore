@@ -42,3 +42,5 @@ next-env.d.ts
 
 #python service
 services/order-service/venv
+services/order-service/__pycache__/
+services/order-service/models/__pycache__/
