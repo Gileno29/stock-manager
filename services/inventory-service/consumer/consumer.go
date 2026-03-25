@@ -58,14 +58,14 @@ func (c *consumer) Read() error {
 			if err != nil {
 				fmt.Println("erro ao conectar no banco de dados", err)
 			}
-			repo := repository.NewRepo(db)
+			repo := repository.NewProductRepo(db)
 
-			_, err = repo.InsertStock(context.Background(), order.ProductID, order.Quantity)
+			rowsAffected, err := repo.DeleteProduct(context.Background(), order.ProductID)
 
 			if err != nil {
 				log.Printf("Falha ao inserir no estoque: %v", err)
 			} else {
-				log.Printf("Estoque atualizado para o Produto %d", order.ProductID)
+				log.Printf("Removido produto %d", rowsAffected)
 			}
 
 		}
