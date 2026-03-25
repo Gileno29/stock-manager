@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"inventory/consumer"
+	"inventory/database"
 	"inventory/rabbitmq"
 	"log"
 )
@@ -19,10 +20,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Falha ao abrir canal: %v", err)
 	}
+
+	db := database.NewDB("postgres", "user", "password", 5434, "localhost", "inventory_service_db")
+
+	err = db.Conection()
+
+	if err != nil {
+		fmt.Println("erro ao conectar no banco de dados", err)
+	}
 	defer ch.Close()
 	defer rabbit.Conn.Close()
 
-	consumer := consumer.NewConsumer(ch)
+	consumer := consumer.NewConsumer(ch, db)
 
 	consumer.Read()
 

@@ -56,5 +56,20 @@ func (r *productRepo) GetProduct(ctx context.Context, id int) (*models.Product, 
 }
 
 func (r *productRepo) UpdateProduct(ctx context.Context, product *models.Product) (*models.Product, error) {
-	return nil, nil
+
+	query := "UPDATE PRODUCT SET code=$2, quantity=$3, description=$4, value=$5  stockLocation=$6 where id=$1"
+
+	r.db.Conn.QueryContext(ctx, query, product.ID, product.Code, product.Description, product.StockLocation)
+
+	return product, nil
+}
+
+func (r *productRepo) ReduceStock(ctx context.Context, id int) error {
+	query := "UPDATE PRODUCT SET  quantity=quantity-1 where id=$1"
+	_, err := r.db.Conn.QueryContext(ctx, query, id)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

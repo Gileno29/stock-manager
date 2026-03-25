@@ -11,4 +11,5 @@ type ProductRepository interface {
 	UpdateProduct(ctx context.Context, product *models.Product) error
 	GetProduct(ctx context.Context, productID int) (*models.Product, error)
 	DeleteProduct(ctx context.Context, productID int) (int, error)
+	ReduceStock(ctx context.Context, productID int) error
 }
