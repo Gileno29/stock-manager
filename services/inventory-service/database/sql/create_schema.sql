@@ -17,3 +17,14 @@ CREATE TABLE IF NOT EXISTS product(
         FOREIGN KEY (stockLocation)
         REFERENCES stock(id)
 );
+
+INSERT INTO stock (description, location) VALUES('main inventory', 'london');
+
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(200,10,'HMBUGER',30,1);
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(1,10,'BATATA FRITA',30,1);
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(3,2,'MACAXEIRA',30,1);
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(100,5,'PREIA',30,1);
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(120,143,'QUEIJO',30,1);
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(130,30,'BACALHAU',30,1);
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(240,22,'SANDUICHE',30,1);
+INSERT INTO product (code, quantity, description, value, stockLocation) VALUES(500,250,'QUEIJADA',30,1);
