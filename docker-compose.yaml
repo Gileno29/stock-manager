@@ -39,6 +39,8 @@ services:
       - "5434:5432"
     networks:
       - microservices_net
+    volumes:
+    - ./services/inventory-service/database/sql:/docker-entrypoint-initdb.d
 
 networks:
   microservices_net:

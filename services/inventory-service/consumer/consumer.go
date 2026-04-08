@@ -3,7 +3,6 @@ package consumer
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"inventory/database"
 	"inventory/models"
 	"inventory/repository"
@@ -13,17 +12,22 @@ import (
 )
 
 type consumer struct {
-	Conn *amqp091.Channel
+	Conn   *amqp091.Channel
+	DBConn *database.DBInventory
 }
 
-func NewConsumer(c *amqp091.Channel) *consumer {
+func NewConsumer(c *amqp091.Channel, db *database.DBInventory) *consumer {
 
 	return &consumer{
-		Conn: c,
+		Conn:   c,
+		DBConn: db,
 	}
 }
 
 func (c *consumer) Read() error {
+	repo := repository.NewProductRepo(c.DBConn)
+	//var product models.Product
+	var order models.Order
 	q, err := c.Conn.QueueDeclare(
 		"order_queue", // name
 		true,          // durable
@@ -45,28 +49,23 @@ func (c *consumer) Read() error {
 
 	go func() {
 		for d := range msgs {
-			var order models.Order
 			err := json.Unmarshal(d.Body, &order)
 			if err != nil {
 				log.Printf("Erro ao decodificar mensagem: %s", err)
 				continue
 			}
-			db := database.NewDB("postgres", "user", "password", 5434, "localhost", "inventory_service_db")
-
-			err = db.Conection()
-
-			if err != nil {
-				fmt.Println("erro ao conectar no banco de dados", err)
+			if _, err := repo.GetProduct(context.Background(), order.ProductID); err != nil {
+				log.Printf("The product does't exists")
+				continue
 			}
-			db.Populate()
-			repo := repository.NewRepo(db)
 
-			_, err = repo.InsertStock(context.Background(), order.ProductID, order.Quantity)
+			err = repo.ReduceStock(context.Background(), order.ProductID)
 
 			if err != nil {
-				log.Printf("Falha ao inserir no estoque: %v", err)
+				log.Printf("Failure on do the order: %v", err)
 			} else {
-				log.Printf("Estoque atualizado para o Produto %d", order.ProductID)
+
+				log.Println("Product quantitty decrease from product ID ")
 			}
 
 		}
